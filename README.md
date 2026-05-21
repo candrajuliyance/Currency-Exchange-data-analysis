@@ -1,2 +1,1 @@
-# data-analysis-with-SQL
-SQL 
+# data-analysis-currency-rate-using-API
