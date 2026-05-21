@@ -1,1 +1,41 @@
 # data-analysis-currency-rate-using-API
+
+# data-analysis-using-API
+
+import requests
+import pandas as pd
+
+
+def load_exchange_rates() -> pd.DataFrame:
+    url = "https://api.exchangerate-api.com/v4/latest/USD"
+    response = requests.get(url)
+    data = response.json()
+    return pd.DataFrame(
+        data['rates'].items(),
+        columns=['Currency', 'Rate']
+    )
+
+
+def search_rates(df: pd.DataFrame) -> None:
+    while True:
+        search_term = input("Search currency (or type 'quit' to exit): ").strip()
+        if search_term.lower() in {'quit', 'exit'}:
+            print("See you again!")
+            break
+
+        if not search_term:
+            print("Please enter a currency code or partial name.")
+            continue
+
+        filtered = df[df['Currency'].str.contains(search_term, case=False, na=False)]
+        if filtered.empty:
+            print("No matching currencies found.")
+        else:
+            print(filtered.to_string(index=False))
+        print()
+
+
+if __name__ == "__main__":
+    df = load_exchange_rates()
+    print(f"Loaded exchange rates for {len(df)} currencies.")
+    search_rates(df)
